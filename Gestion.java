@@ -22,15 +22,18 @@ public class Gestion extends JPanel implements KeyListener {
 
 	private int p1Score = 0, p2Score = 0;
 
-	Point raquette1 = new Point(1, 20);
-	Point raquette2 = new Point(Launcher.Largeur - 17, 20);
+	Point raquette1 = new Point(1, 250);
+	Point raquette2 = new Point(Launcher.Largeur - 17, 250);
 	Point balle;
+
+	boolean p1UpPress, p1DownPress, p2UpPress, p2DownPress;
 
 	// Refresh
 	private Timer looper = new Timer(1000 / 50, new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
+			gestionRaquette();
 			balleMove();
 			repaint();
 		}
@@ -46,7 +49,7 @@ public class Gestion extends JPanel implements KeyListener {
 	private void ballePosition() {
 		balle = new Point(Launcher.Largeur / 2, (int) (Math.random() * Launcher.Hauteur / 2));
 		xSpeed = -xSpeed;
-		//ySpeed = -ySpeed;
+		// ySpeed = -ySpeed;
 	}
 
 	// Win
@@ -56,14 +59,14 @@ public class Gestion extends JPanel implements KeyListener {
 			looper.stop();
 			javax.swing.JOptionPane.showMessageDialog(null, "Player 1 win !");
 			System.exit(1);
-		} else if (p2Score == 5){
+		} else if (p2Score == 5) {
 			repaint();
 			looper.stop();
 			javax.swing.JOptionPane.showMessageDialog(null, "Player 2 win !");
 			System.exit(1);
 		}
 	}
-	
+
 	// Mouvement balle
 	private void balleMove() {
 		balle.x += xSpeed;
@@ -120,16 +123,17 @@ public class Gestion extends JPanel implements KeyListener {
 
 	}
 
-	@Override
-	public void keyPressed(KeyEvent e) {
+	// Gestion raquette
+	private void gestionRaquette() {
+
 		// Joueur 1
-		if (e.getKeyCode() == KeyEvent.VK_UP && e.getKeyCode() != KeyEvent.VK_DOWN) {
+		if (p1UpPress == true && p1DownPress != true) {
 			if (raquette1.y >= 10) {
 				raquette1.y -= 10;
 			} else {
 				raquette1.y = 0;
 			}
-		} else if (e.getKeyCode() != KeyEvent.VK_UP && e.getKeyCode() == KeyEvent.VK_DOWN) {
+		} else if (p1UpPress != true && p1DownPress == true) {
 			if (raquette1.y < 500) {
 				raquette1.y += 10;
 				repaint();
@@ -140,13 +144,13 @@ public class Gestion extends JPanel implements KeyListener {
 		repaint();
 
 		// Joueur 2
-		if (e.getKeyCode() == KeyEvent.VK_NUMPAD8 && e.getKeyCode() != KeyEvent.VK_NUMPAD2) {
+		if (p2UpPress == true && p2DownPress != true) {
 			if (raquette2.y >= 10) {
 				raquette2.y -= 10;
 			} else {
 				raquette2.y = 0;
 			}
-		} else if (e.getKeyCode() != KeyEvent.VK_NUMPAD8 && e.getKeyCode() == KeyEvent.VK_NUMPAD2) {
+		} else if (p2UpPress != true && p2DownPress == true) {
 			if (raquette2.y < 500) {
 				raquette2.y += 10;
 				repaint();
@@ -159,9 +163,40 @@ public class Gestion extends JPanel implements KeyListener {
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
+	public void keyPressed(KeyEvent e) {
 
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_UP:
+			p1UpPress = true;
+			break;
+		case KeyEvent.VK_DOWN:
+			p1DownPress = true;
+			break;
+		case KeyEvent.VK_NUMPAD2:
+			p2DownPress = true;
+			break;
+		case KeyEvent.VK_NUMPAD8:
+			p2UpPress = true;
+			break;
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_UP:
+			p1UpPress = false;
+			break;
+		case KeyEvent.VK_DOWN:
+			p1DownPress = false;
+			break;
+		case KeyEvent.VK_NUMPAD2:
+			p2DownPress = false;
+			break;
+		case KeyEvent.VK_NUMPAD8:
+			p2UpPress = false;
+			break;
+		}
 	}
 
 	@Override
